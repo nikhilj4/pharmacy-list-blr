@@ -30,7 +30,7 @@ function markerIcon(color) {
     });
 }
 
-Papa.parse("bangalore_locations.csv", {
+Papa.parse("bangalore_locations 11.48.41\u202fAM.csv", {
     download: true,
     header: true,
     complete: function (results) {
