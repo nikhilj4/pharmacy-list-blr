@@ -10,11 +10,11 @@ const markers = [];
 
 function getColor(category) {
     category = (category || "").toLowerCase();
-    if (category.includes("restaurant")) return "red";
-    if (category.includes("cafe")) return "orange";
-    if (category.includes("hotel")) return "blue";
-    if (category.includes("pub") || category.includes("bar")) return "violet";
-    if (category.includes("school") || category.includes("college") || category.includes("university")) return "green";
+    if (category.includes("hospital")) return "red";
+    if (category.includes("clinic") || category.includes("doctors") || category.includes("doctor")) return "orange";
+    if (category.includes("pharmacy")) return "green";
+    if (category.includes("dentist")) return "blue";
+    if (category.includes("veterinary")) return "violet";
     return "grey";
 }
 
@@ -30,7 +30,7 @@ function markerIcon(color) {
     });
 }
 
-Papa.parse("bangalore_locations 11.48.41\u202fAM.csv", {
+Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
     download: true,
     header: true,
     complete: function (results) {
@@ -71,3 +71,4 @@ document.getElementById("search").addEventListener("keyup", function () {
         }
     });
 });
+
