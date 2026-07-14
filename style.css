@@ -19,7 +19,7 @@ body {
     top: 20px;
     left: 20px;
     z-index: 9999;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.4);
@@ -28,22 +28,106 @@ body {
     padding: 20px;
     width: 320px;
     box-sizing: border-box;
-    transition: all 0.3s ease;
+    transition: width 0.3s ease, padding 0.3s ease, background-color 0.3s ease;
 }
 
 #controls-panel:hover {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
+}
+
+#controls-panel.collapsed {
+    width: 260px;
+    padding: 12px 16px;
+}
+
+#controls-panel.collapsed #panel-body {
+    display: none;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    user-select: none;
 }
 
 .panel-header h3 {
-    margin: 0 0 15px 0;
-    font-size: 18px;
+    margin: 0;
+    font-size: 16px;
     font-weight: 600;
     color: #1a202c;
     letter-spacing: -0.5px;
+}
+
+#minimize-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
+    color: #4a5568;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+#minimize-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #1a202c;
+}
+
+/* Quick Actions (Locate / Route) */
+.quick-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.action-btn.select-btn {
+    background-color: #3182ce;
+    color: #ffffff;
+    box-shadow: 0 4px 6px rgba(49, 130, 206, 0.2);
+}
+
+.action-btn.select-btn:hover {
+    background-color: #2b6cb0;
+    box-shadow: 0 6px 8px rgba(49, 130, 206, 0.3);
+}
+
+.action-btn.danger-btn {
+    background-color: #e53e3e;
+    color: #ffffff;
+    box-shadow: 0 4px 6px rgba(229, 62, 62, 0.2);
+}
+
+.action-btn.danger-btn:hover {
+    background-color: #c53030;
+    box-shadow: 0 6px 8px rgba(229, 62, 62, 0.3);
 }
 
 .control-group {
@@ -167,6 +251,48 @@ body {
 .dot.blue { background-color: #3498db; }
 .dot.violet { background-color: #9b59b6; }
 .dot.grey { background-color: #95a5a6; }
+
+/* Custom Popup styling */
+.popup-route-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+    padding: 6px 10px;
+    background-color: #3182ce;
+    color: #ffffff !important;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 6px;
+    font-size: 11px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.popup-route-btn:hover {
+    background-color: #2b6cb0;
+}
+
+/* Leaflet Routing Machine Panel adjustments */
+.leaflet-routing-container {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    font-family: 'Outfit', sans-serif !important;
+    max-height: 300px !important;
+    overflow-y: auto !important;
+}
+
+/* Leaflet Rotate Compass adjustments */
+.leaflet-control-rotate {
+    background: #ffffff !important;
+    border: 1px solid rgba(0,0,0,0.2) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+}
 
 /* Responsive adjustments */
 @media (max-width: 480px) {

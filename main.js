@@ -1,5 +1,14 @@
 /* main.js */
-const map = L.map('map').setView([12.9716, 77.5946], 11);
+
+// Initialize the map with leaflet-rotate plugin enabled
+const map = L.map('map', {
+    rotate: true,
+    rotateControl: {
+        closeOnZeroBearing: false,
+        position: 'topright'
+    },
+    bearing: 0
+}).setView([12.9716, 77.5946], 11);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -7,6 +16,9 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 const markers = [];
+let userLatLng = null;
+let userMarker = null;
+let routingControl = null;
 
 const areaAliases = {
     "whitefield": ["whitefield"],
@@ -109,7 +121,7 @@ function markerIcon(color) {
 }
 
 function updateStats(matchCount, selectedArea) {
-    let population = 9930000; // Sum of all 30 areas
+    let population = 9930000;
     if (selectedArea !== "all" && areasConfig[selectedArea]) {
         population = areasConfig[selectedArea].population;
     }
@@ -153,7 +165,6 @@ function filterMarkers() {
         if (selectedArea === "all") {
             matchesArea = true;
         } else {
-            // Coordinate proximity match
             const config = areasConfig[selectedArea];
             if (config) {
                 const dist = getDistance(m.lat, m.lng, config.center[0], config.center[1]);
@@ -161,7 +172,6 @@ function filterMarkers() {
                     matchesArea = true;
                 }
             }
-            // Text search fallback
             if (!matchesArea) {
                 const aliases = areaAliases[selectedArea] || [selectedArea];
                 matchesArea = aliases.some(alias => m.address.includes(alias) || m.name.includes(alias));
@@ -190,6 +200,161 @@ function filterMarkers() {
     }
 }
 
+// Global directions trigger called from popup buttons
+window.getRouteTo = function(destLat, destLng, destName) {
+    let startLatLng = userLatLng || map.getCenter();
+    
+    if (routingControl) {
+        map.removeControl(routingControl);
+    }
+    
+    routingControl = L.Routing.control({
+        waypoints: [
+            L.latLng(startLatLng),
+            L.latLng(destLat, destLng)
+        ],
+        routeWhileDragging: true,
+        lineOptions: {
+            styles: [{ color: '#3182ce', opacity: 0.85, weight: 6 }]
+        },
+        createMarker: function(i, wp, nWps) {
+            if (i === 0) {
+                return L.marker(wp.latLng, {
+                    icon: markerIcon('blue')
+                }).bindPopup("Start Location");
+            } else {
+                return L.marker(wp.latLng, {
+                    icon: markerIcon('red')
+                }).bindPopup("Destination: " + destName);
+            }
+        }
+    }).addTo(map);
+    
+    document.getElementById("clear-route-btn").style.display = "block";
+};
+
+// Geolocation control
+const locateBtn = document.getElementById("locate-btn");
+locateBtn.addEventListener("click", () => {
+    locateBtn.innerText = "Locating...";
+    map.locate({ setView: true, maxZoom: 15 });
+});
+
+map.on('locationfound', (e) => {
+    userLatLng = e.latlng;
+    locateBtn.innerText = "Locate Me";
+    
+    if (userMarker) {
+        map.removeLayer(userMarker);
+    }
+    
+    userMarker = L.marker(userLatLng, {
+        icon: markerIcon('blue')
+    }).addTo(map).bindPopup("<b>My Current Location</b>").openPopup();
+});
+
+map.on('locationerror', () => {
+    locateBtn.innerText = "Locate Me";
+    alert("Location access denied or unavailable. Routing from map center.");
+});
+
+// Clear routing control
+const clearRouteBtn = document.getElementById("clear-route-btn");
+clearRouteBtn.addEventListener("click", () => {
+    if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;
+    }
+    clearRouteBtn.style.display = "none";
+});
+
+// Draggable controls panel logic
+const panel = document.getElementById("controls-panel");
+const header = document.getElementById("panel-header-drag");
+
+let isDragging = false;
+let startX, startY, initialX, initialY;
+
+header.addEventListener("mousedown", dragStart);
+header.addEventListener("touchstart", touchStart, { passive: true });
+
+function dragStart(e) {
+    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    const rect = panel.getBoundingClientRect();
+    initialX = rect.left;
+    initialY = rect.top;
+    panel.style.right = 'auto';
+    panel.style.bottom = 'auto';
+    panel.style.left = initialX + 'px';
+    panel.style.top = initialY + 'px';
+    document.addEventListener("mousemove", dragMove);
+    document.addEventListener("mouseup", dragEnd);
+}
+
+function dragMove(e) {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    panel.style.left = (initialX + dx) + 'px';
+    panel.style.top = (initialY + dy) + 'px';
+}
+
+function dragEnd() {
+    isDragging = false;
+    document.removeEventListener("mousemove", dragMove);
+    document.removeEventListener("mouseup", dragEnd);
+}
+
+function touchStart(e) {
+    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+    const touch = e.touches[0];
+    isDragging = true;
+    startX = touch.clientX;
+    startY = touch.clientY;
+    const rect = panel.getBoundingClientRect();
+    initialX = rect.left;
+    initialY = rect.top;
+    panel.style.right = 'auto';
+    panel.style.bottom = 'auto';
+    panel.style.left = initialX + 'px';
+    panel.style.top = initialY + 'px';
+    document.addEventListener("touchmove", touchMove, { passive: false });
+    document.addEventListener("touchend", touchEnd);
+}
+
+function touchMove(e) {
+    if (!isDragging) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const dx = touch.clientX - startX;
+    const dy = touch.clientY - startY;
+    panel.style.left = (initialX + dx) + 'px';
+    panel.style.top = (initialY + dy) + 'px';
+}
+
+function touchEnd() {
+    isDragging = false;
+    document.removeEventListener("touchmove", touchMove);
+    document.removeEventListener("touchend", touchEnd);
+}
+
+// Minimize panel logic
+const minimizeBtn = document.getElementById("minimize-btn");
+minimizeBtn.addEventListener("click", () => {
+    panel.classList.toggle("collapsed");
+    if (panel.classList.contains("collapsed")) {
+        minimizeBtn.innerText = "+";
+        minimizeBtn.title = "Expand";
+    } else {
+        minimizeBtn.innerText = "—";
+        minimizeBtn.title = "Minimize";
+    }
+});
+
+// Parse locations database and add map markers
 Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
     download: true,
     header: true,
@@ -212,9 +377,8 @@ Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
                 <b>Address:</b> ${row.Address || ""}<br>
                 <b>Phone:</b> ${row.Phone || ""}<br>
                 <b>Website:</b>
-                <a href="${row.Website || '#'}" target="_blank">
-                  ${row.Website || ""}
-                </a>
+                ${row.Website ? `<a href="${row.Website}" target="_blank">${row.Website}</a>` : 'N/A'}<br>
+                <button class="popup-route-btn" onclick="getRouteTo(${latVal}, ${lngVal}, '${row.Name.replace(/'/g, "\\'")}')">Directions to here</button>
             `);
 
             markers.push({

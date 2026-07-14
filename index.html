@@ -7,93 +7,111 @@
 <title>Bangalore Medical Finder</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=1.0.1" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+<link rel="stylesheet" href="style.css?v=1.0.3" />
 </head>
 <body>
 <div id="controls-panel">
-    <div class="panel-header">
+    <div class="panel-header" id="panel-header-drag">
         <h3>Bengaluru Medical Map</h3>
+        <button id="minimize-btn" title="Minimize">—</button>
     </div>
-    <div class="control-group">
-        <input id="search" placeholder="Search location...">
-    </div>
-    <div class="control-group">
-        <select id="area-filter">
-            <option value="all">All Areas</option>
-            <option value="whitefield">Whitefield</option>
-            <option value="electronic city">Electronic City</option>
-            <option value="marathahalli">Marathahalli</option>
-            <option value="bellandur">Bellandur</option>
-            <option value="hsr layout">HSR Layout</option>
-            <option value="koramangala">Koramangala</option>
-            <option value="indiranagar">Indiranagar</option>
-            <option value="jp nagar">JP Nagar</option>
-            <option value="jayanagar">Jayanagar</option>
-            <option value="banashankari">Banashankari</option>
-            <option value="btm layout">BTM Layout</option>
-            <option value="yelahanka">Yelahanka</option>
-            <option value="hebbal">Hebbal</option>
-            <option value="thanisandra">Thanisandra</option>
-            <option value="kr puram">KR Puram</option>
-            <option value="kengeri">Kengeri</option>
-            <option value="rajajinagar">Rajajinagar</option>
-            <option value="vijayanagar">Vijayanagar</option>
-            <option value="malleshwaram">Malleshwaram</option>
-            <option value="basavanagudi">Basavanagudi</option>
-            <option value="rr nagar">RR Nagar</option>
-            <option value="sarjapur road">Sarjapur Road</option>
-            <option value="hoodi">Hoodi</option>
-            <option value="mahadevapura">Mahadevapura</option>
-            <option value="cv raman nagar">CV Raman Nagar</option>
-            <option value="yeshwanthpur">Yeshwanthpur</option>
-            <option value="bommanahalli">Bommanahalli</option>
-            <option value="bommasandra">Bommasandra</option>
-            <option value="kothanur">Kothanur</option>
-            <option value="nagawara">Nagawara</option>
-        </select>
-    </div>
-    <div class="control-group">
-        <select id="category-filter">
-            <option value="all">All Categories</option>
-            <option value="hospital">Hospitals</option>
-            <option value="clinic">Clinics & Doctors</option>
-            <option value="pharmacy">Pharmacies</option>
-            <option value="dentist">Dentists</option>
-            <option value="veterinary">Veterinary</option>
-            <option value="other">Others</option>
-        </select>
-    </div>
-    <div id="counter-display">
-        Showing <span id="locations-count">0</span> locations
-    </div>
-    <div id="density-stats">
-        <div class="stat-row">
-            <span class="stat-label">Population:</span>
-            <span id="stat-population" class="stat-value">-</span>
+    
+    <div id="panel-body">
+        <div class="quick-actions">
+            <button id="locate-btn" class="action-btn select-btn">Locate Me</button>
+            <button id="clear-route-btn" class="action-btn danger-btn" style="display: none;">Clear Route</button>
         </div>
-        <div class="stat-row">
-            <span class="stat-label">Density per 10k:</span>
-            <span id="stat-density" class="stat-value">-</span>
+
+        <div class="control-group">
+            <input id="search" placeholder="Search location...">
         </div>
-        <div class="stat-row">
-            <span class="stat-label">Coverage Ratio:</span>
-            <span id="stat-ratio" class="stat-value">-</span>
+        
+        <div class="control-group">
+            <select id="area-filter">
+                <option value="all">All Areas</option>
+                <option value="whitefield">Whitefield</option>
+                <option value="electronic city">Electronic City</option>
+                <option value="marathahalli">Marathahalli</option>
+                <option value="bellandur">Bellandur</option>
+                <option value="hsr layout">HSR Layout</option>
+                <option value="koramangala">Koramangala</option>
+                <option value="indiranagar">Indiranagar</option>
+                <option value="jp nagar">JP Nagar</option>
+                <option value="jayanagar">Jayanagar</option>
+                <option value="banashankari">Banashankari</option>
+                <option value="btm layout">BTM Layout</option>
+                <option value="yelahanka">Yelahanka</option>
+                <option value="hebbal">Hebbal</option>
+                <option value="thanisandra">Thanisandra</option>
+                <option value="kr puram">KR Puram</option>
+                <option value="kengeri">Kengeri</option>
+                <option value="rajajinagar">Rajajinagar</option>
+                <option value="vijayanagar">Vijayanagar</option>
+                <option value="malleshwaram">Malleshwaram</option>
+                <option value="basavanagudi">Basavanagudi</option>
+                <option value="rr nagar">RR Nagar</option>
+                <option value="sarjapur road">Sarjapur Road</option>
+                <option value="hoodi">Hoodi</option>
+                <option value="mahadevapura">Mahadevapura</option>
+                <option value="cv raman nagar">CV Raman Nagar</option>
+                <option value="yeshwanthpur">Yeshwanthpur</option>
+                <option value="bommanahalli">Bommanahalli</option>
+                <option value="bommasandra">Bommasandra</option>
+                <option value="kothanur">Kothanur</option>
+                <option value="nagawara">Nagawara</option>
+            </select>
         </div>
-    </div>
-    <div class="legend">
-        <div class="legend-item"><span class="dot red"></span> Hospitals</div>
-        <div class="legend-item"><span class="dot orange"></span> Clinics / Doctors</div>
-        <div class="legend-item"><span class="dot green"></span> Pharmacies</div>
-        <div class="legend-item"><span class="dot blue"></span> Dentists</div>
-        <div class="legend-item"><span class="dot violet"></span> Veterinary</div>
-        <div class="legend-item"><span class="dot grey"></span> Others</div>
+        
+        <div class="control-group">
+            <select id="category-filter">
+                <option value="all">All Categories</option>
+                <option value="hospital">Hospitals</option>
+                <option value="clinic">Clinics & Doctors</option>
+                <option value="pharmacy">Pharmacies</option>
+                <option value="dentist">Dentists</option>
+                <option value="veterinary">Veterinary</option>
+                <option value="other">Others</option>
+            </select>
+        </div>
+        
+        <div id="counter-display">
+            Showing <span id="locations-count">0</span> locations
+        </div>
+        
+        <div id="density-stats">
+            <div class="stat-row">
+                <span class="stat-label">Population:</span>
+                <span id="stat-population" class="stat-value">-</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Density per 10k:</span>
+                <span id="stat-density" class="stat-value">-</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Coverage Ratio:</span>
+                <span id="stat-ratio" class="stat-value">-</span>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item"><span class="dot red"></span> Hospitals</div>
+            <div class="legend-item"><span class="dot orange"></span> Clinics / Doctors</div>
+            <div class="legend-item"><span class="dot green"></span> Pharmacies</div>
+            <div class="legend-item"><span class="dot blue"></span> Dentists</div>
+            <div class="legend-item"><span class="dot violet"></span> Veterinary</div>
+            <div class="legend-item"><span class="dot grey"></span> Others</div>
+        </div>
     </div>
 </div>
 <div id="map"></div>
+
+<!-- Leaflet & Plugin scripts -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script src="main.js?v=1.0.1"></script>
+<script src="main.js?v=1.0.2"></script>
 </body>
 </html>
-
-
