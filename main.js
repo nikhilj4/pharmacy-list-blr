@@ -41,6 +41,51 @@ const areaAliases = {
     "nagawara": ["nagawara", "nagavara"]
 };
 
+const areasConfig = {
+    "whitefield": { center: [12.9698, 77.7500], radius: 4.0 },
+    "electronic city": { center: [12.8452, 77.6602], radius: 3.5 },
+    "marathahalli": { center: [12.9569, 77.7011], radius: 2.5 },
+    "bellandur": { center: [12.9304, 77.6784], radius: 2.5 },
+    "hsr layout": { center: [12.9116, 77.6388], radius: 2.5 },
+    "koramangala": { center: [12.9352, 77.6244], radius: 2.5 },
+    "indiranagar": { center: [12.9719, 77.6412], radius: 2.2 },
+    "jp nagar": { center: [12.9063, 77.5857], radius: 2.5 },
+    "jayanagar": { center: [12.9307, 77.5832], radius: 2.2 },
+    "banashankari": { center: [12.9254, 77.5468], radius: 3.0 },
+    "btm layout": { center: [12.9166, 77.6101], radius: 2.2 },
+    "yelahanka": { center: [13.1007, 77.5963], radius: 4.5 },
+    "hebbal": { center: [13.0354, 77.5988], radius: 2.5 },
+    "thanisandra": { center: [13.0582, 77.6417], radius: 2.5 },
+    "kr puram": { center: [13.0117, 77.7017], radius: 3.5 },
+    "kengeri": { center: [12.8996, 77.4827], radius: 3.5 },
+    "rajajinagar": { center: [12.9882, 77.5550], radius: 2.2 },
+    "vijayanagar": { center: [12.9696, 77.5350], radius: 2.2 },
+    "malleshwaram": { center: [13.0031, 77.5696], radius: 2.2 },
+    "basavanagudi": { center: [12.9417, 77.5755], radius: 2.2 },
+    "rr nagar": { center: [12.9207, 77.5196], radius: 3.5 },
+    "sarjapur road": { center: [12.9096, 77.6684], radius: 3.5 },
+    "hoodi": { center: [12.9898, 77.7179], radius: 2.5 },
+    "mahadevapura": { center: [12.9896, 77.6953], radius: 2.5 },
+    "cv raman nagar": { center: [12.9790, 77.6650], radius: 2.2 },
+    "yeshwanthpur": { center: [13.0250, 77.5462], radius: 2.5 },
+    "bommanahalli": { center: [12.9030, 77.6242], radius: 2.5 },
+    "bommasandra": { center: [12.8166, 77.6784], radius: 3.0 },
+    "kothanur": { center: [13.0625, 77.6450], radius: 2.5 },
+    "nagawara": { center: [13.0238, 77.6231], radius: 2.5 }
+};
+
+function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in km
+}
+
 function getColor(category) {
     category = (category || "").toLowerCase();
     if (category.includes("hospital")) return "red";
@@ -87,8 +132,19 @@ function filterMarkers() {
         if (selectedArea === "all") {
             matchesArea = true;
         } else {
-            const aliases = areaAliases[selectedArea] || [selectedArea];
-            matchesArea = aliases.some(alias => m.address.includes(alias) || m.name.includes(alias));
+            // Coordinate proximity match
+            const config = areasConfig[selectedArea];
+            if (config) {
+                const dist = getDistance(m.lat, m.lng, config.center[0], config.center[1]);
+                if (dist <= config.radius) {
+                    matchesArea = true;
+                }
+            }
+            // Text search fallback
+            if (!matchesArea) {
+                const aliases = areaAliases[selectedArea] || [selectedArea];
+                matchesArea = aliases.some(alias => m.address.includes(alias) || m.name.includes(alias));
+            }
         }
 
         if (matchesSearch && matchesCategory && matchesArea) {
@@ -117,8 +173,11 @@ Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
             if (!row.Latitude || !row.Longitude) return;
 
             const category = (row.Category || "").toLowerCase();
+            const latVal = parseFloat(row.Latitude);
+            const lngVal = parseFloat(row.Longitude);
+            
             const marker = L.marker(
-                [parseFloat(row.Latitude), parseFloat(row.Longitude)],
+                [latVal, lngVal],
                 { icon: markerIcon(getColor(category)) }
             ).addTo(map);
 
@@ -137,6 +196,8 @@ Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
                 name: (row.Name || "").toLowerCase(),
                 address: (row.Address || "").toLowerCase(),
                 category: category,
+                lat: latVal,
+                lng: lngVal,
                 marker: marker
             });
         });
