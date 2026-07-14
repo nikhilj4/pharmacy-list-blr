@@ -21,6 +21,8 @@ let userLatLng = null;
 let userMarker = null;
 let routingControl = null;
 
+const CUSTOM_LOCS_KEY = "custom_medical_locations";
+
 const areaAliases = {
     "whitefield": ["whitefield"],
     "electronic city": ["electronic city", "e-city", "elec. city"],
@@ -199,6 +201,65 @@ function filterMarkers() {
         const bounds = L.latLngBounds(visibleLatLngs);
         map.fitBounds(bounds, { padding: [50, 50] });
     }
+}
+
+// Helper to create and add a single medical marker
+function addMedicalMarker(row, isCustom = false) {
+    if (!row.Latitude || !row.Longitude) return;
+
+    const category = (row.Category || "").toLowerCase();
+    const latVal = parseFloat(row.Latitude);
+    const lngVal = parseFloat(row.Longitude);
+    const nameLabel = isCustom ? `${row.Name} (Added by User)` : row.Name;
+    
+    const marker = L.marker(
+        [latVal, lngVal],
+        { icon: markerIcon(getColor(category)) }
+    ).addTo(map);
+
+    const gmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latVal},${lngVal}`;
+
+    marker.bindPopup(`
+        <b>${nameLabel || ""}</b><br>
+        <b>Category:</b> ${row.Category || ""}<br>
+        <b>Address:</b> ${row.Address || ""}<br>
+        <b>Phone:</b> ${row.Phone || ""}<br>
+        <b>Website:</b>
+        ${row.Website ? `<a href="${row.Website}" target="_blank">${row.Website}</a>` : 'N/A'}<br>
+        <div style="margin-top: 8px; display: flex; gap: 6px;">
+            <button class="popup-route-btn" style="flex: 1; margin-top: 0;" onclick="getRouteTo(${latVal}, ${lngVal}, '${row.Name.replace(/'/g, "\\'")}')">Directions Here</button>
+            <a href="${gmapsUrl}" target="_blank" class="popup-gmaps-btn" style="display: flex; align-items: center; justify-content: center; width: 36px; height: 28px; background-color: #4285F4; border-radius: 6px; color: white !important;" title="Open in Google Maps">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </a>
+            <button class="popup-copy-btn" style="display: flex; align-items: center; justify-content: center; width: 36px; height: 28px; background-color: #edf2f7; border: 1px solid #cbd5e0; border-radius: 6px; cursor: pointer; color: #4a5568;" onclick="copyToClipboard('${gmapsUrl}')" title="Copy Google Maps Link">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+        </div>
+    `);
+
+    markers.push({
+        name: (row.Name || "").toLowerCase(),
+        address: (row.Address || "").toLowerCase(),
+        category: category,
+        lat: latVal,
+        lng: lngVal,
+        marker: marker
+    });
+}
+
+// Local Storage helpers for custom user locations
+function getCustomLocations() {
+    try {
+        return JSON.parse(localStorage.getItem(CUSTOM_LOCS_KEY)) || [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveCustomLocation(loc) {
+    const list = getCustomLocations();
+    list.push(loc);
+    localStorage.setItem(CUSTOM_LOCS_KEY, JSON.stringify(list));
 }
 
 // Global directions trigger called from popup buttons
@@ -391,51 +452,80 @@ minimizeBtn.addEventListener("click", () => {
     }
 });
 
+// Add Location Modal handlers
+const addLocationModal = document.getElementById("add-location-modal");
+const closeModalBtn = document.getElementById("close-modal-btn");
+const saveLocationBtn = document.getElementById("save-location-btn");
+
+let pendingLatLng = null;
+let tempPopup = L.popup();
+
+map.on("click", (e) => {
+    pendingLatLng = e.latlng;
+    tempPopup
+        .setLatLng(pendingLatLng)
+        .setContent(`<button class="popup-route-btn" style="margin-top: 0; background-color: #2ecc71; border: none; padding: 6px 12px;" onclick="openAddLocationModal(${pendingLatLng.lat}, ${pendingLatLng.lng})">Add Missing Location Here</button>`)
+        .openOn(map);
+});
+
+window.openAddLocationModal = function(lat, lng) {
+    pendingLatLng = L.latLng(lat, lng);
+    map.closePopup(tempPopup);
+    addLocationModal.style.display = "flex";
+    document.getElementById("new-loc-name").value = "";
+    document.getElementById("new-loc-address").value = "";
+    document.getElementById("new-loc-phone").value = "";
+    document.getElementById("new-loc-website").value = "";
+};
+
+closeModalBtn.addEventListener("click", () => {
+    addLocationModal.style.display = "none";
+});
+
+saveLocationBtn.addEventListener("click", () => {
+    const name = document.getElementById("new-loc-name").value.trim();
+    const category = document.getElementById("new-loc-category").value;
+    const address = document.getElementById("new-loc-address").value.trim() || "Bengaluru";
+    const phone = document.getElementById("new-loc-phone").value.trim();
+    const website = document.getElementById("new-loc-website").value.trim();
+
+    if (!name) {
+        alert("Please enter a name for the location.");
+        return;
+    }
+
+    const newLoc = {
+        Name: name,
+        Category: category,
+        Latitude: pendingLatLng.lat,
+        Longitude: pendingLatLng.lng,
+        Address: address,
+        Phone: phone,
+        Website: website,
+        Email: "",
+        OSM_ID: "custom_" + Date.now()
+    };
+
+    saveCustomLocation(newLoc);
+    addMedicalMarker(newLoc, true);
+    addLocationModal.style.display = "none";
+    filterMarkers();
+    alert("Location saved successfully!");
+});
+
 // Parse locations database and add map markers
 Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
     download: true,
     header: true,
     complete: function (results) {
         results.data.forEach(row => {
-            if (!row.Latitude || !row.Longitude) return;
+            addMedicalMarker(row, false);
+        });
 
-            const category = (row.Category || "").toLowerCase();
-            const latVal = parseFloat(row.Latitude);
-            const lngVal = parseFloat(row.Longitude);
-            
-            const marker = L.marker(
-                [latVal, lngVal],
-                { icon: markerIcon(getColor(category)) }
-            ).addTo(map);
-
-            const gmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latVal},${lngVal}`;
-
-            marker.bindPopup(`
-                <b>${row.Name || ""}</b><br>
-                <b>Category:</b> ${row.Category || ""}<br>
-                <b>Address:</b> ${row.Address || ""}<br>
-                <b>Phone:</b> ${row.Phone || ""}<br>
-                <b>Website:</b>
-                ${row.Website ? `<a href="${row.Website}" target="_blank">${row.Website}</a>` : 'N/A'}<br>
-                <div style="margin-top: 8px; display: flex; gap: 6px;">
-                    <button class="popup-route-btn" style="flex: 1; margin-top: 0;" onclick="getRouteTo(${latVal}, ${lngVal}, '${row.Name.replace(/'/g, "\\'")}')">Directions Here</button>
-                    <a href="${gmapsUrl}" target="_blank" class="popup-gmaps-btn" style="display: flex; align-items: center; justify-content: center; width: 36px; height: 28px; background-color: #4285F4; border-radius: 6px; color: white !important;" title="Open in Google Maps">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                    </a>
-                    <button class="popup-copy-btn" style="display: flex; align-items: center; justify-content: center; width: 36px; height: 28px; background-color: #edf2f7; border: 1px solid #cbd5e0; border-radius: 6px; cursor: pointer; color: #4a5568;" onclick="copyToClipboard('${gmapsUrl}')" title="Copy Google Maps Link">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    </button>
-                </div>
-            `);
-
-            markers.push({
-                name: (row.Name || "").toLowerCase(),
-                address: (row.Address || "").toLowerCase(),
-                category: category,
-                lat: latVal,
-                lng: lngVal,
-                marker: marker
-            });
+        // Load custom user-added locations from localStorage
+        const customLocs = getCustomLocations();
+        customLocs.forEach(row => {
+            addMedicalMarker(row, true);
         });
 
         // Set initial count and stats

@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
-<link rel="stylesheet" href="style.css?v=1.0.3" />
+<link rel="stylesheet" href="style.css?v=1.0.4" />
 </head>
 <body>
 <div id="controls-panel">
@@ -113,6 +113,42 @@
         </div>
     </div>
 </div>
+
+<!-- Modal for adding custom locations -->
+<div id="add-location-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4>Add Missing Location</h4>
+            <button id="close-modal-btn">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="control-group">
+                <input id="new-loc-name" placeholder="Name (e.g. Shiva Medicals)" required>
+            </div>
+            <div class="control-group">
+                <select id="new-loc-category">
+                    <option value="pharmacy">Pharmacy</option>
+                    <option value="hospital">Hospital</option>
+                    <option value="clinic">Clinic / Doctor</option>
+                    <option value="dentist">Dentist</option>
+                    <option value="veterinary">Veterinary</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <input id="new-loc-address" placeholder="Address">
+            </div>
+            <div class="control-group">
+                <input id="new-loc-phone" placeholder="Phone Number">
+            </div>
+            <div class="control-group">
+                <input id="new-loc-website" placeholder="Website URL">
+            </div>
+            <button id="save-location-btn" class="action-btn select-btn" style="width: 100%;">Save Location</button>
+        </div>
+    </div>
+</div>
+
 <div id="map"></div>
 
 <!-- Leaflet & Plugin scripts -->
