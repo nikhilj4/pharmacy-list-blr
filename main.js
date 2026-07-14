@@ -42,36 +42,36 @@ const areaAliases = {
 };
 
 const areasConfig = {
-    "whitefield": { center: [12.9698, 77.7500], radius: 4.0 },
-    "electronic city": { center: [12.8452, 77.6602], radius: 3.5 },
-    "marathahalli": { center: [12.9569, 77.7011], radius: 2.5 },
-    "bellandur": { center: [12.9304, 77.6784], radius: 2.5 },
-    "hsr layout": { center: [12.9116, 77.6388], radius: 2.5 },
-    "koramangala": { center: [12.9352, 77.6244], radius: 2.5 },
-    "indiranagar": { center: [12.9719, 77.6412], radius: 2.2 },
-    "jp nagar": { center: [12.9063, 77.5857], radius: 2.5 },
-    "jayanagar": { center: [12.9307, 77.5832], radius: 2.2 },
-    "banashankari": { center: [12.9254, 77.5468], radius: 3.0 },
-    "btm layout": { center: [12.9166, 77.6101], radius: 2.2 },
-    "yelahanka": { center: [13.1007, 77.5963], radius: 4.5 },
-    "hebbal": { center: [13.0354, 77.5988], radius: 2.5 },
-    "thanisandra": { center: [13.0582, 77.6417], radius: 2.5 },
-    "kr puram": { center: [13.0117, 77.7017], radius: 3.5 },
-    "kengeri": { center: [12.8996, 77.4827], radius: 3.5 },
-    "rajajinagar": { center: [12.9882, 77.5550], radius: 2.2 },
-    "vijayanagar": { center: [12.9696, 77.5350], radius: 2.2 },
-    "malleshwaram": { center: [13.0031, 77.5696], radius: 2.2 },
-    "basavanagudi": { center: [12.9417, 77.5755], radius: 2.2 },
-    "rr nagar": { center: [12.9207, 77.5196], radius: 3.5 },
-    "sarjapur road": { center: [12.9096, 77.6684], radius: 3.5 },
-    "hoodi": { center: [12.9898, 77.7179], radius: 2.5 },
-    "mahadevapura": { center: [12.9896, 77.6953], radius: 2.5 },
-    "cv raman nagar": { center: [12.9790, 77.6650], radius: 2.2 },
-    "yeshwanthpur": { center: [13.0250, 77.5462], radius: 2.5 },
-    "bommanahalli": { center: [12.9030, 77.6242], radius: 2.5 },
-    "bommasandra": { center: [12.8166, 77.6784], radius: 3.0 },
-    "kothanur": { center: [13.0625, 77.6450], radius: 2.5 },
-    "nagawara": { center: [13.0238, 77.6231], radius: 2.5 }
+    "whitefield": { center: [12.9698, 77.7500], radius: 4.0, population: 520000 },
+    "electronic city": { center: [12.8452, 77.6602], radius: 3.5, population: 480000 },
+    "marathahalli": { center: [12.9569, 77.7011], radius: 2.5, population: 410000 },
+    "bellandur": { center: [12.9304, 77.6784], radius: 2.5, population: 380000 },
+    "hsr layout": { center: [12.9116, 77.6388], radius: 2.5, population: 320000 },
+    "koramangala": { center: [12.9352, 77.6244], radius: 2.5, population: 300000 },
+    "indiranagar": { center: [12.9719, 77.6412], radius: 2.2, population: 250000 },
+    "jp nagar": { center: [12.9063, 77.5857], radius: 2.5, population: 470000 },
+    "jayanagar": { center: [12.9307, 77.5832], radius: 2.2, population: 390000 },
+    "banashankari": { center: [12.9254, 77.5468], radius: 3.0, population: 450000 },
+    "btm layout": { center: [12.9166, 77.6101], radius: 2.2, population: 350000 },
+    "yelahanka": { center: [13.1007, 77.5963], radius: 4.5, population: 520000 },
+    "hebbal": { center: [13.0354, 77.5988], radius: 2.5, population: 330000 },
+    "thanisandra": { center: [13.0582, 77.6417], radius: 2.5, population: 290000 },
+    "kr puram": { center: [13.0117, 77.7017], radius: 3.5, population: 480000 },
+    "kengeri": { center: [12.8996, 77.4827], radius: 3.5, population: 360000 },
+    "rajajinagar": { center: [12.9882, 77.5550], radius: 2.2, population: 280000 },
+    "vijayanagar": { center: [12.9696, 77.5350], radius: 2.2, population: 340000 },
+    "malleshwaram": { center: [13.0031, 77.5696], radius: 2.2, population: 230000 },
+    "basavanagudi": { center: [12.9417, 77.5755], radius: 2.2, population: 210000 },
+    "rr nagar": { center: [12.9207, 77.5196], radius: 3.5, population: 390000 },
+    "sarjapur road": { center: [12.9096, 77.6684], radius: 3.5, population: 310000 },
+    "hoodi": { center: [12.9898, 77.7179], radius: 2.5, population: 190000 },
+    "mahadevapura": { center: [12.9896, 77.6953], radius: 2.5, population: 450000 },
+    "cv raman nagar": { center: [12.9790, 77.6650], radius: 2.2, population: 250000 },
+    "yeshwanthpur": { center: [13.0250, 77.5462], radius: 2.5, population: 280000 },
+    "bommanahalli": { center: [12.9030, 77.6242], radius: 2.5, population: 420000 },
+    "bommasandra": { center: [12.8166, 77.6784], radius: 3.0, population: 310000 },
+    "kothanur": { center: [13.0625, 77.6450], radius: 2.5, population: 180000 },
+    "nagawara": { center: [13.0238, 77.6231], radius: 2.5, population: 220000 }
 };
 
 function getDistance(lat1, lon1, lat2, lon2) {
@@ -106,6 +106,26 @@ function markerIcon(color) {
         popupAnchor: [1, -34],
         shadowSize: [41, 41]
     });
+}
+
+function updateStats(matchCount, selectedArea) {
+    let population = 9930000; // Sum of all 30 areas
+    if (selectedArea !== "all" && areasConfig[selectedArea]) {
+        population = areasConfig[selectedArea].population;
+    }
+    
+    document.getElementById("stat-population").innerText = population.toLocaleString();
+    
+    if (matchCount > 0) {
+        const density = (matchCount / population) * 10000;
+        document.getElementById("stat-density").innerText = density.toFixed(2);
+        
+        const ratio = Math.round(population / matchCount);
+        document.getElementById("stat-ratio").innerText = "1 per " + ratio.toLocaleString() + " people";
+    } else {
+        document.getElementById("stat-density").innerText = "0.00";
+        document.getElementById("stat-ratio").innerText = "N/A";
+    }
 }
 
 function filterMarkers() {
@@ -162,6 +182,7 @@ function filterMarkers() {
     });
 
     document.getElementById("locations-count").innerText = matchCount;
+    updateStats(matchCount, selectedArea);
 
     if (selectedArea !== "all" && visibleLatLngs.length > 0) {
         const bounds = L.latLngBounds(visibleLatLngs);
@@ -206,8 +227,9 @@ Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
             });
         });
 
-        // Set initial count
+        // Set initial count and stats
         document.getElementById("locations-count").innerText = markers.length;
+        updateStats(markers.length, "all");
     }
 });
 

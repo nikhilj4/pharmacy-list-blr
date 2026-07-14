@@ -101,6 +101,37 @@ body {
     font-weight: 700;
 }
 
+/* Density statistics styling */
+#density-stats {
+    background: rgba(247, 250, 252, 0.8);
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.stat-row:last-child {
+    margin-bottom: 0;
+}
+
+.stat-label {
+    color: #718096;
+    font-weight: 500;
+}
+
+.stat-value {
+    color: #2d3748;
+    font-weight: 600;
+}
+
 /* Legend styling */
 .legend {
     margin-top: 15px;
