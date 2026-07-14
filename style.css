@@ -230,6 +230,24 @@ body {
     font-weight: 600;
 }
 
+/* Apartment stats styling */
+#apartment-stats {
+    background: rgba(240, 253, 244, 0.8);
+    border: 1px solid #c6f6d5;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+}
+
+.stat-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #2f855a;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
 /* Legend styling */
 .legend {
     margin-top: 15px;

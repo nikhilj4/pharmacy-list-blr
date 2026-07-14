@@ -89,6 +89,39 @@ const areasConfig = {
     "nagawara": { center: [13.0238, 77.6231], radius: 2.5, population: 220000 }
 };
 
+const apartmentConfig = {
+    "whitefield": { smallAp: 900, smallFl: 13500, medAp: 700, medFl: 28000, largeGated: 180, largeFl: 32400, townships: 18, townshipFl: 18000, totalFl: 91900 },
+    "electronic city": { smallAp: 1100, smallFl: 16500, medAp: 500, medFl: 20000, largeGated: 120, largeFl: 21600, townships: 8, townshipFl: 8000, totalFl: 66100 },
+    "marathahalli": { smallAp: 900, smallFl: 13500, medAp: 450, medFl: 18000, largeGated: 90, largeFl: 16200, townships: 5, townshipFl: 5000, totalFl: 52700 },
+    "bellandur": { smallAp: 700, smallFl: 10500, medAp: 500, medFl: 20000, largeGated: 120, largeFl: 21600, townships: 10, townshipFl: 10000, totalFl: 62100 },
+    "hsr layout": { smallAp: 1000, smallFl: 15000, medAp: 350, medFl: 14000, largeGated: 40, largeFl: 7200, townships: 2, townshipFl: 2000, totalFl: 38200 },
+    "koramangala": { smallAp: 1100, smallFl: 16500, medAp: 250, medFl: 10000, largeGated: 20, largeFl: 3600, townships: 1, townshipFl: 1000, totalFl: 31100 },
+    "indiranagar": { smallAp: 900, smallFl: 13500, medAp: 180, medFl: 7200, largeGated: 10, largeFl: 1800, townships: 0, townshipFl: 0, totalFl: 22500 },
+    "jp nagar": { smallAp: 2000, smallFl: 30000, medAp: 450, medFl: 18000, largeGated: 30, largeFl: 5400, townships: 1, townshipFl: 1000, totalFl: 54400 },
+    "jayanagar": { smallAp: 1800, smallFl: 27000, medAp: 300, medFl: 12000, largeGated: 20, largeFl: 3600, townships: 1, townshipFl: 1000, totalFl: 43600 },
+    "banashankari": { smallAp: 2200, smallFl: 33000, medAp: 350, medFl: 14000, largeGated: 20, largeFl: 3600, townships: 1, townshipFl: 1000, totalFl: 51600 },
+    "btm layout": { smallAp: 1300, smallFl: 19500, medAp: 300, medFl: 12000, largeGated: 30, largeFl: 5400, townships: 1, townshipFl: 1000, totalFl: 37900 },
+    "yelahanka": { smallAp: 1200, smallFl: 18000, medAp: 600, medFl: 24000, largeGated: 130, largeFl: 23400, townships: 12, townshipFl: 12000, totalFl: 77400 },
+    "hebbal": { smallAp: 700, smallFl: 10500, medAp: 350, medFl: 14000, largeGated: 80, largeFl: 14400, townships: 8, townshipFl: 8000, totalFl: 46900 },
+    "thanisandra": { smallAp: 500, smallFl: 7500, medAp: 450, medFl: 18000, largeGated: 120, largeFl: 21600, townships: 10, townshipFl: 10000, totalFl: 57100 },
+    "kr puram": { smallAp: 900, smallFl: 13500, medAp: 500, medFl: 20000, largeGated: 130, largeFl: 23400, townships: 8, townshipFl: 8000, totalFl: 64900 },
+    "kengeri": { smallAp: 1300, smallFl: 19500, medAp: 350, medFl: 14000, largeGated: 40, largeFl: 7200, townships: 2, townshipFl: 2000, totalFl: 42700 },
+    "rajajinagar": { smallAp: 1100, smallFl: 16500, medAp: 200, medFl: 8000, largeGated: 20, largeFl: 3600, townships: 1, townshipFl: 1000, totalFl: 29100 },
+    "vijayanagar": { smallAp: 1300, smallFl: 19500, medAp: 250, medFl: 10000, largeGated: 20, largeFl: 3600, townships: 1, townshipFl: 1000, totalFl: 34100 },
+    "malleshwaram": { smallAp: 1000, smallFl: 15000, medAp: 150, medFl: 6000, largeGated: 10, largeFl: 1800, townships: 0, townshipFl: 0, totalFl: 22800 },
+    "basavanagudi": { smallAp: 900, smallFl: 13500, medAp: 120, medFl: 4800, largeGated: 5, largeFl: 900, townships: 0, townshipFl: 0, totalFl: 19200 },
+    "rr nagar": { smallAp: 1200, smallFl: 18000, medAp: 350, medFl: 14000, largeGated: 60, largeFl: 10800, townships: 3, townshipFl: 3000, totalFl: 45800 },
+    "sarjapur road": { smallAp: 500, smallFl: 7500, medAp: 500, medFl: 20000, largeGated: 140, largeFl: 25200, townships: 8, townshipFl: 8000, totalFl: 60700 },
+    "hoodi": { smallAp: 300, smallFl: 4500, medAp: 250, medFl: 10000, largeGated: 60, largeFl: 10800, townships: 3, townshipFl: 3000, totalFl: 28300 },
+    "mahadevapura": { smallAp: 700, smallFl: 10500, medAp: 600, medFl: 24000, largeGated: 160, largeFl: 28800, townships: 10, townshipFl: 10000, totalFl: 73300 },
+    "cv raman nagar": { smallAp: 800, smallFl: 12000, medAp: 200, medFl: 8000, largeGated: 20, largeFl: 3600, townships: 1, townshipFl: 1000, totalFl: 24600 },
+    "yeshwanthpur": { smallAp: 900, smallFl: 13500, medAp: 220, medFl: 8800, largeGated: 30, largeFl: 5400, townships: 2, townshipFl: 2000, totalFl: 29700 },
+    "bommanahalli": { smallAp: 1100, smallFl: 16500, medAp: 400, medFl: 16000, largeGated: 70, largeFl: 12600, townships: 4, townshipFl: 4000, totalFl: 49100 },
+    "bommasandra": { smallAp: 700, smallFl: 10500, medAp: 350, medFl: 14000, largeGated: 80, largeFl: 14400, townships: 5, townshipFl: 5000, totalFl: 43900 },
+    "kothanur": { smallAp: 450, smallFl: 6750, medAp: 250, medFl: 10000, largeGated: 70, largeFl: 12600, townships: 4, townshipFl: 4000, totalFl: 33350 },
+    "nagawara": { smallAp: 500, smallFl: 7500, medAp: 250, medFl: 10000, largeGated: 60, largeFl: 10800, townships: 4, townshipFl: 4000, totalFl: 32300 }
+};
+
 function getDistance(lat1, lon1, lat2, lon2) {
     const R = 6371; // Radius of the Earth in km
     const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -141,6 +174,48 @@ function updateStats(matchCount, selectedArea) {
         document.getElementById("stat-density").innerText = "0.00";
         document.getElementById("stat-ratio").innerText = "N/A";
     }
+
+    // Apartment Stats calculation
+    let totalFl = 0;
+    let townships = 0;
+    let townshipFl = 0;
+    let largeGated = 0;
+    let largeFl = 0;
+    let smallAp = 0;
+    let smallFl = 0;
+    let medAp = 0;
+    let medFl = 0;
+
+    if (selectedArea === "all") {
+        for (const area in apartmentConfig) {
+            const conf = apartmentConfig[area];
+            totalFl += conf.totalFl;
+            townships += conf.townships;
+            townshipFl += conf.townshipFl;
+            largeGated += conf.largeGated;
+            largeFl += conf.largeFl;
+            smallAp += conf.smallAp;
+            smallFl += conf.smallFl;
+            medAp += conf.medAp;
+            medFl += conf.medFl;
+        }
+    } else if (apartmentConfig[selectedArea]) {
+        const conf = apartmentConfig[selectedArea];
+        totalFl = conf.totalFl;
+        townships = conf.townships;
+        townshipFl = conf.townshipFl;
+        largeGated = conf.largeGated;
+        largeFl = conf.largeFl;
+        smallAp = conf.smallAp;
+        smallFl = conf.smallFl;
+        medAp = conf.medAp;
+        medFl = conf.medFl;
+    }
+
+    document.getElementById("stat-total-flats").innerText = totalFl.toLocaleString();
+    document.getElementById("stat-townships").innerText = `${townships} (${townshipFl.toLocaleString()} flats)`;
+    document.getElementById("stat-gated-communities").innerText = `${largeGated} (${largeFl.toLocaleString()} flats)`;
+    document.getElementById("stat-small-med").innerText = `${(smallAp + medAp).toLocaleString()} Apts (${(smallFl + medFl).toLocaleString()} flats)`;
 }
 
 function filterMarkers() {
