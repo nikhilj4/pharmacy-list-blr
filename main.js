@@ -223,6 +223,35 @@ function filterMarkers() {
     const selectedCategory = document.getElementById("category-filter").value.toLowerCase();
     const selectedArea = document.getElementById("area-filter").value.toLowerCase();
 
+    // Toggle legend visibility dynamically
+    const legend = document.querySelector(".legend");
+    if (legend) {
+        if (selectedCategory === "all") {
+            legend.style.display = "none";
+        } else {
+            legend.style.display = "block";
+            const legendItems = legend.querySelectorAll(".legend-item");
+            legendItems.forEach(item => {
+                const txt = item.innerText.toLowerCase();
+                if (selectedCategory === "hospital" && txt.includes("hospitals")) {
+                    item.style.display = "flex";
+                } else if (selectedCategory === "clinic" && (txt.includes("clinic") || txt.includes("doctor"))) {
+                    item.style.display = "flex";
+                } else if (selectedCategory === "pharmacy" && txt.includes("pharmacies")) {
+                    item.style.display = "flex";
+                } else if (selectedCategory === "dentist" && txt.includes("dentists")) {
+                    item.style.display = "flex";
+                } else if (selectedCategory === "veterinary" && txt.includes("veterinary")) {
+                    item.style.display = "flex";
+                } else if (selectedCategory === "other" && txt.includes("other")) {
+                    item.style.display = "flex";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+    }
+
     let visibleLatLngs = [];
     let matchCount = 0;
 
