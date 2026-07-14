@@ -51,6 +51,7 @@ body {
 }
 
 #search,
+#area-filter,
 #category-filter {
     width: 100%;
     padding: 12px 14px;
@@ -66,11 +67,13 @@ body {
 }
 
 #search:focus,
+#area-filter:focus,
 #category-filter:focus {
     border-color: #4299e1;
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
 }
 
+#area-filter,
 #category-filter {
     cursor: pointer;
     appearance: none;

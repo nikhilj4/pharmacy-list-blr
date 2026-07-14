@@ -8,6 +8,39 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 const markers = [];
 
+const areaAliases = {
+    "whitefield": ["whitefield"],
+    "electronic city": ["electronic city", "e-city", "elec. city"],
+    "marathahalli": ["marathahalli", "marathalli"],
+    "bellandur": ["bellandur", "belandur"],
+    "hsr layout": ["hsr layout", "hsr"],
+    "koramangala": ["koramangala"],
+    "indiranagar": ["indiranagar", "indira nagar"],
+    "jp nagar": ["jp nagar", "j.p. nagar", "j. p. nagar"],
+    "jayanagar": ["jayanagar"],
+    "banashankari": ["banashankari", "bsk"],
+    "btm layout": ["btm layout", "btm"],
+    "yelahanka": ["yelahanka"],
+    "hebbal": ["hebbal"],
+    "thanisandra": ["thanisandra"],
+    "kr puram": ["kr puram", "k.r. puram", "krishnarajapuram"],
+    "kengeri": ["kengeri"],
+    "rajajinagar": ["rajajinagar", "rajaji nagar"],
+    "vijayanagar": ["vijayanagar", "vijaya nagar"],
+    "malleshwaram": ["malleshwaram", "malleswaram"],
+    "basavanagudi": ["basavanagudi"],
+    "rr nagar": ["rr nagar", "r r nagar", "r.r. nagar", "rajarajeshwari nagar"],
+    "sarjapur road": ["sarjapur", "sarjapura"],
+    "hoodi": ["hoodi"],
+    "mahadevapura": ["mahadevapura", "mahadevapuri"],
+    "cv raman nagar": ["cv raman", "c.v. raman"],
+    "yeshwanthpur": ["yeshwanthpur", "yeswanthpur", "yeshwantpur"],
+    "bommanahalli": ["bommanahalli"],
+    "bommasandra": ["bommasandra"],
+    "kothanur": ["kothanur"],
+    "nagawara": ["nagawara", "nagavara"]
+};
+
 function getColor(category) {
     category = (category || "").toLowerCase();
     if (category.includes("hospital")) return "red";
@@ -33,6 +66,9 @@ function markerIcon(color) {
 function filterMarkers() {
     const searchText = document.getElementById("search").value.toLowerCase();
     const selectedCategory = document.getElementById("category-filter").value.toLowerCase();
+    const selectedArea = document.getElementById("area-filter").value.toLowerCase();
+
+    let visibleLatLngs = [];
 
     markers.forEach(m => {
         const matchesSearch = m.name.includes(searchText) || m.address.includes(searchText);
@@ -47,16 +83,30 @@ function filterMarkers() {
             matchesCategory = m.category.includes(selectedCategory);
         }
 
-        if (matchesSearch && matchesCategory) {
+        let matchesArea = false;
+        if (selectedArea === "all") {
+            matchesArea = true;
+        } else {
+            const aliases = areaAliases[selectedArea] || [selectedArea];
+            matchesArea = aliases.some(alias => m.address.includes(alias) || m.name.includes(alias));
+        }
+
+        if (matchesSearch && matchesCategory && matchesArea) {
             if (!map.hasLayer(m.marker)) {
                 map.addLayer(m.marker);
             }
+            visibleLatLngs.push(m.marker.getLatLng());
         } else {
             if (map.hasLayer(m.marker)) {
                 map.removeLayer(m.marker);
             }
         }
     });
+
+    if (selectedArea !== "all" && visibleLatLngs.length > 0) {
+        const bounds = L.latLngBounds(visibleLatLngs);
+        map.fitBounds(bounds, { padding: [50, 50] });
+    }
 }
 
 Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
@@ -95,3 +145,4 @@ Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
 
 document.getElementById("search").addEventListener("keyup", filterMarkers);
 document.getElementById("category-filter").addEventListener("change", filterMarkers);
+document.getElementById("area-filter").addEventListener("change", filterMarkers);
