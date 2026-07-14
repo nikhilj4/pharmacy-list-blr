@@ -166,6 +166,20 @@ body {
     background-position: right 14px center;
     background-size: 16px;
     padding-right: 40px;
+.control-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 6px;
+}
+
+#rotate-slider {
+    width: 100%;
+    margin: 4px 0 0 0;
+    cursor: pointer;
+    accent-color: #3182ce;
 }
 
 /* Counter display */

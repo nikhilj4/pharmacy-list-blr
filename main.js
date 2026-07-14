@@ -3,6 +3,7 @@
 // Initialize the map with leaflet-rotate plugin enabled
 const map = L.map('map', {
     rotate: true,
+    touchRotate: true,
     rotateControl: {
         closeOnZeroBearing: false,
         position: 'topright'
@@ -266,6 +267,23 @@ clearRouteBtn.addEventListener("click", () => {
         routingControl = null;
     }
     clearRouteBtn.style.display = "none";
+});
+
+// Map rotation slider controls
+const rotateSlider = document.getElementById("rotate-slider");
+const rotateVal = document.getElementById("rotate-val");
+
+rotateSlider.addEventListener("input", (e) => {
+    const angle = parseInt(e.target.value);
+    rotateVal.innerText = angle + "°";
+    map.setBearing(angle);
+});
+
+map.on("rotate", () => {
+    let angle = Math.round(map.getBearing());
+    if (angle < 0) angle += 360;
+    rotateSlider.value = angle;
+    rotateVal.innerText = angle + "°";
 });
 
 // Draggable controls panel logic
