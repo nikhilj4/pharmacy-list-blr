@@ -4,16 +4,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bangalore Locations Map</title>
+<title>Bangalore Medical Finder</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="style.css?v=1.0.1" />
 </head>
 <body>
-<input id="search" placeholder="Search location...">
+<div id="controls-panel">
+    <div class="panel-header">
+        <h3>Bengaluru Medical Map</h3>
+    </div>
+    <div class="control-group">
+        <input id="search" placeholder="Search location...">
+    </div>
+    <div class="control-group">
+        <select id="category-filter">
+            <option value="all">All Categories</option>
+            <option value="hospital">Hospitals</option>
+            <option value="clinic">Clinics & Doctors</option>
+            <option value="pharmacy">Pharmacies</option>
+            <option value="dentist">Dentists</option>
+            <option value="veterinary">Veterinary</option>
+            <option value="other">Others</option>
+        </select>
+    </div>
+    <div class="legend">
+        <div class="legend-item"><span class="dot red"></span> Hospitals</div>
+        <div class="legend-item"><span class="dot orange"></span> Clinics / Doctors</div>
+        <div class="legend-item"><span class="dot green"></span> Pharmacies</div>
+        <div class="legend-item"><span class="dot blue"></span> Dentists</div>
+        <div class="legend-item"><span class="dot violet"></span> Veterinary</div>
+        <div class="legend-item"><span class="dot grey"></span> Others</div>
+    </div>
+</div>
 <div id="map"></div>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="main.js?v=1.0.1"></script>
 </body>
 </html>
+
 

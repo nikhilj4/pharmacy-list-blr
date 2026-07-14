@@ -30,6 +30,35 @@ function markerIcon(color) {
     });
 }
 
+function filterMarkers() {
+    const searchText = document.getElementById("search").value.toLowerCase();
+    const selectedCategory = document.getElementById("category-filter").value.toLowerCase();
+
+    markers.forEach(m => {
+        const matchesSearch = m.name.includes(searchText) || m.address.includes(searchText);
+        
+        let matchesCategory = false;
+        if (selectedCategory === "all") {
+            matchesCategory = true;
+        } else if (selectedCategory === "other") {
+            const known = ["hospital", "clinic", "pharmacy", "doctors", "doctor", "dentist", "veterinary"];
+            matchesCategory = !known.some(k => m.category.includes(k));
+        } else {
+            matchesCategory = m.category.includes(selectedCategory);
+        }
+
+        if (matchesSearch && matchesCategory) {
+            if (!map.hasLayer(m.marker)) {
+                map.addLayer(m.marker);
+            }
+        } else {
+            if (map.hasLayer(m.marker)) {
+                map.removeLayer(m.marker);
+            }
+        }
+    });
+}
+
 Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
     download: true,
     header: true,
@@ -37,38 +66,32 @@ Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
         results.data.forEach(row => {
             if (!row.Latitude || !row.Longitude) return;
 
+            const category = (row.Category || "").toLowerCase();
             const marker = L.marker(
                 [parseFloat(row.Latitude), parseFloat(row.Longitude)],
-                { icon: markerIcon(getColor(row.Category)) }
+                { icon: markerIcon(getColor(category)) }
             ).addTo(map);
 
             marker.bindPopup(`
-        <b>${row.Name || ""}</b><br>
-        <b>Category:</b> ${row.Category || ""}<br>
-        <b>Address:</b> ${row.Address || ""}<br>
-        <b>Phone:</b> ${row.Phone || ""}<br>
-        <b>Website:</b>
-        <a href="${row.Website || '#'}" target="_blank">
-          ${row.Website || ""}
-        </a>
-      `);
+                <b>${row.Name || ""}</b><br>
+                <b>Category:</b> ${row.Category || ""}<br>
+                <b>Address:</b> ${row.Address || ""}<br>
+                <b>Phone:</b> ${row.Phone || ""}<br>
+                <b>Website:</b>
+                <a href="${row.Website || '#'}" target="_blank">
+                  ${row.Website || ""}
+                </a>
+            `);
 
             markers.push({
                 name: (row.Name || "").toLowerCase(),
+                address: (row.Address || "").toLowerCase(),
+                category: category,
                 marker: marker
             });
         });
     }
 });
 
-document.getElementById("search").addEventListener("keyup", function () {
-    const text = this.value.toLowerCase();
-    markers.forEach(m => {
-        if (m.name.includes(text)) {
-            m.marker.setOpacity(1);
-        } else {
-            m.marker.setOpacity(0.2);
-        }
-    });
-});
-
+document.getElementById("search").addEventListener("keyup", filterMarkers);
+document.getElementById("category-filter").addEventListener("change", filterMarkers);
