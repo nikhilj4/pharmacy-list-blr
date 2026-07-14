@@ -234,6 +234,25 @@ window.getRouteTo = function(destLat, destLng, destName) {
     document.getElementById("clear-route-btn").style.display = "block";
 };
 
+// Clipboard utility for copying Google Maps links
+window.copyToClipboard = function(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert("Google Maps link copied to clipboard!");
+    }).catch(err => {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand("copy");
+            alert("Google Maps link copied to clipboard!");
+        } catch (e) {
+            console.error("Failed to copy", e);
+        }
+        document.body.removeChild(textarea);
+    });
+};
+
 // Geolocation control
 const locateBtn = document.getElementById("locate-btn");
 locateBtn.addEventListener("click", () => {
@@ -389,6 +408,8 @@ Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
                 { icon: markerIcon(getColor(category)) }
             ).addTo(map);
 
+            const gmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latVal},${lngVal}`;
+
             marker.bindPopup(`
                 <b>${row.Name || ""}</b><br>
                 <b>Category:</b> ${row.Category || ""}<br>
@@ -396,7 +417,15 @@ Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
                 <b>Phone:</b> ${row.Phone || ""}<br>
                 <b>Website:</b>
                 ${row.Website ? `<a href="${row.Website}" target="_blank">${row.Website}</a>` : 'N/A'}<br>
-                <button class="popup-route-btn" onclick="getRouteTo(${latVal}, ${lngVal}, '${row.Name.replace(/'/g, "\\'")}')">Directions to here</button>
+                <div style="margin-top: 8px; display: flex; gap: 6px;">
+                    <button class="popup-route-btn" style="flex: 1; margin-top: 0;" onclick="getRouteTo(${latVal}, ${lngVal}, '${row.Name.replace(/'/g, "\\'")}')">Directions Here</button>
+                    <a href="${gmapsUrl}" target="_blank" class="popup-gmaps-btn" style="display: flex; align-items: center; justify-content: center; width: 36px; height: 28px; background-color: #4285F4; border-radius: 6px; color: white !important;" title="Open in Google Maps">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    </a>
+                    <button class="popup-copy-btn" style="display: flex; align-items: center; justify-content: center; width: 36px; height: 28px; background-color: #edf2f7; border: 1px solid #cbd5e0; border-radius: 6px; cursor: pointer; color: #4a5568;" onclick="copyToClipboard('${gmapsUrl}')" title="Copy Google Maps Link">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
+                </div>
             `);
 
             markers.push({

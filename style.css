@@ -288,6 +288,15 @@ body {
     background-color: #2b6cb0;
 }
 
+.popup-gmaps-btn:hover {
+    background-color: #357ae8 !important;
+}
+
+.popup-copy-btn:hover {
+    background-color: #e2e8f0 !important;
+    color: #1a202c !important;
+}
+
 /* Leaflet Routing Machine Panel adjustments */
 .leaflet-routing-container {
     background: rgba(255, 255, 255, 0.95) !important;
