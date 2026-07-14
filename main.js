@@ -114,6 +114,7 @@ function filterMarkers() {
     const selectedArea = document.getElementById("area-filter").value.toLowerCase();
 
     let visibleLatLngs = [];
+    let matchCount = 0;
 
     markers.forEach(m => {
         const matchesSearch = m.name.includes(searchText) || m.address.includes(searchText);
@@ -152,12 +153,15 @@ function filterMarkers() {
                 map.addLayer(m.marker);
             }
             visibleLatLngs.push(m.marker.getLatLng());
+            matchCount++;
         } else {
             if (map.hasLayer(m.marker)) {
                 map.removeLayer(m.marker);
             }
         }
     });
+
+    document.getElementById("locations-count").innerText = matchCount;
 
     if (selectedArea !== "all" && visibleLatLngs.length > 0) {
         const bounds = L.latLngBounds(visibleLatLngs);
@@ -201,6 +205,9 @@ Papa.parse("bangalore_medical_database.csv?v=" + new Date().getTime(), {
                 marker: marker
             });
         });
+
+        // Set initial count
+        document.getElementById("locations-count").innerText = markers.length;
     }
 });
 
